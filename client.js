@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 script.onerror = reject;
             });
             
+            console.log("JSZip library loaded successfully");
+            
             // Create a new zip instance
             const zip = new JSZip();
             
