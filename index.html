@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manus AI - Websocket Communication Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Manus AI - WebSocket Communication Platform</h1>
+            <p>A powerful AI agent for real-time communication and collaboration</p>
+        </header>
+
+        <main>
+            <div class="room-container">
+                <div id="presence-display"></div>
+                <div id="app"></div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="download-section">
+                <h3>Download Node.js Server Files</h3>
+                <button id="downloadBtn">Download Server Files (.zip)</button>
+            </div>
+            <div class="credits">
+                <p>Based on <a href="https://gist.github.com/jlia0/db0a9695b3ca7609c9b1a08dcbf872c9" target="_blank">WebSim Multiplayer</a></p>
+                <p>Powered by Manus AI</p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="text/babel" src="app.js"></script>
+    <script src="client.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
