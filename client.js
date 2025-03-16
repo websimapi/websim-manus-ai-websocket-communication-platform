@@ -98,7 +98,7 @@ const loadCollections = () => {
                 });
                 
                 collections.set(dir, collectionData);
-                console.log(\`Loaded collection: \${dir} with \${collectionData.size} records\`);
+                console.log(`Loaded collection: ${dir} with ${collectionData.size} records`);
             }
         });
     } catch (error) {
@@ -114,22 +114,22 @@ const saveRecord = (collection, id, data) => {
             fs.mkdirSync(collectionDir, { recursive: true });
         }
         
-        const recordPath = path.join(collectionDir, \`\${id}.json\`);
+        const recordPath = path.join(collectionDir, `${id}.json`);
         fs.writeFileSync(recordPath, JSON.stringify(data));
     } catch (error) {
-        console.error(\`Error saving record \${id} to collection \${collection}:\`, error);
+        console.error(`Error saving record ${id} to collection ${collection}:`, error);
     }
 };
 
 // Delete a record from disk
 const deleteRecord = (collection, id) => {
     try {
-        const recordPath = path.join(STORAGE_DIR, collection, \`\${id}.json\`);
+        const recordPath = path.join(STORAGE_DIR, collection, `${id}.json`);
         if (fs.existsSync(recordPath)) {
             fs.unlinkSync(recordPath);
         }
     } catch (error) {
-        console.error(\`Error deleting record \${id} from collection \${collection}:\`, error);
+        console.error(`Error deleting record ${id} from collection ${collection}:`, error);
     }
 };
 
@@ -140,7 +140,7 @@ loadCollections();
 wss.on('connection', (ws) => {
     // Generate a unique ID for this client
     const clientId = uuidv4();
-    let username = \`user_\${clientId.substring(0, 6)}\`;
+    let username = `user_${clientId.substring(0, 6)}`;
     
     // Store the client connection
     clients.set(clientId, {
@@ -152,7 +152,7 @@ wss.on('connection', (ws) => {
     // Initialize presence for this client
     presenceData.set(clientId, {});
     
-    console.log(\`Client connected: \${clientId} (\${username})\`);
+    console.log(`Client connected: ${clientId} (${username})`);
     
     // Send initial connection message to the client
     ws.send(JSON.stringify({
@@ -270,7 +270,7 @@ wss.on('connection', (ws) => {
     
     // Handle disconnection
     ws.on('close', () => {
-        console.log(\`Client disconnected: \${clientId} (\${username})\`);
+        console.log(`Client disconnected: ${clientId} (${username})`);
         
         // Remove client data
         clients.delete(clientId);
@@ -345,7 +345,7 @@ function handleCollectionUpdate(clientId, data) {
     if (!collections.has(collection) || !collections.get(collection).has(id)) {
         client.ws.send(JSON.stringify({
             type: 'error',
-            message: \`Record \${id} not found in collection \${collection}\`
+            message: `Record ${id} not found in collection ${collection}`
         }));
         return;
     }
@@ -406,7 +406,7 @@ function handleCollectionDelete(clientId, data) {
     if (!collections.has(collection) || !collections.get(collection).has(id)) {
         client.ws.send(JSON.stringify({
             type: 'error',
-            message: \`Record \${id} not found in collection \${collection}\`
+            message: `Record ${id} not found in collection ${collection}`
         }));
         return;
     }
@@ -457,7 +457,7 @@ function handleCollectionGet(clientId, data) {
     if (!collections.has(collection) || !collections.get(collection).has(id)) {
         client.ws.send(JSON.stringify({
             type: 'error',
-            message: \`Record \${id} not found in collection \${collection}\`
+            message: `Record ${id} not found in collection ${collection}`
         }));
         return;
     }
@@ -561,8 +561,8 @@ app.get('/status', (req, res) => {
 
 // Start the server
 server.listen(PORT, () => {
-    console.log(\`Manus WebSocket Server running on port \${PORT}\`);
-    console.log(\`Data stored in: \${STORAGE_DIR}\`);
+    console.log(`Manus WebSocket Server running on port ${PORT}`);
+    console.log(`Data stored in: ${STORAGE_DIR}`);
 });
 `,
             
@@ -589,27 +589,27 @@ A Node.js WebSocket server for real-time communication, designed for Linux envir
 2. Navigate to the directory in your terminal
 3. Install dependencies:
 
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 ## Usage
 
 Start the server:
 
-\`\`\`bash
+```bash
 npm start
-\`\`\`
+```
 
 By default, the server runs on port 8080. You can change this by setting the PORT environment variable:
 
-\`\`\`bash
+```bash
 PORT=3000 npm start
-\`\`\`
+```
 
 ## API Endpoints
 
-- \`GET /status\`: Get server status information
+- `GET /status`: Get server status information
 
 ## WebSocket Protocol
 
@@ -617,13 +617,13 @@ PORT=3000 npm start
 
 When a client connects, the server sends a welcome message with a client ID and default username:
 
-\`\`\`json
+```json
 {
   "type": "welcome",
   "clientId": "unique-id",
   "username": "user_xxxxxx"
 }
-\`\`\`
+```
 
 ### Client Messages
 
@@ -631,16 +631,16 @@ Clients can send various message types:
 
 #### Update Username
 
-\`\`\`json
+```json
 {
   "type": "update_username",
   "username": "new_username"
 }
-\`\`\`
+```
 
 #### Update Presence
 
-\`\`\`json
+```json
 {
   "type": "update_presence",
   "presence": {
@@ -648,12 +648,12 @@ Clients can send various message types:
     "status": "online"
   }
 }
-\`\`\`
+```
 
 #### Collection Operations
 
 Create a record:
-\`\`\`json
+```json
 {
   "type": "collection_create",
   "collection": "messages",
@@ -662,10 +662,10 @@ Create a record:
     "parent_id": null
   }
 }
-\`\`\`
+```
 
 Update a record:
-\`\`\`json
+```json
 {
   "type": "collection_update",
   "collection": "messages",
@@ -674,28 +674,28 @@ Update a record:
     "text": "Updated message"
   }
 }
-\`\`\`
+```
 
 Delete a record:
-\`\`\`json
+```json
 {
   "type": "collection_delete",
   "collection": "messages",
   "id": "record-id"
 }
-\`\`\`
+```
 
 Get a record:
-\`\`\`json
+```json
 {
   "type": "collection_get",
   "collection": "messages",
   "id": "record-id"
 }
-\`\`\`
+```
 
 List records:
-\`\`\`json
+```json
 {
   "type": "collection_list",
   "collection": "messages",
@@ -703,21 +703,21 @@ List records:
     "parent_id": null
   }
 }
-\`\`\`
+```
 
 #### Custom Messages
 
 Any other message type will be broadcasted to all clients:
 
-\`\`\`json
+```json
 {
   "type": "chat_message",
   "message": "Hello, everyone!",
   "echo": true
 }
-\`\`\`
+```
 
-Set \`echo: false\` to prevent the message from being sent back to the sender.
+Set `echo: false` to prevent the message from being sent back to the sender.
 
 ### Server Messages
 
@@ -725,25 +725,25 @@ The server broadcasts various events to clients:
 
 #### User Connection/Disconnection
 
-\`\`\`json
+```json
 {
   "type": "connected",
   "clientId": "unique-id",
   "username": "username"
 }
-\`\`\`
+```
 
-\`\`\`json
+```json
 {
   "type": "disconnected",
   "clientId": "unique-id",
   "username": "username"
 }
-\`\`\`
+```
 
 #### Presence Updates
 
-\`\`\`json
+```json
 {
   "type": "presence",
   "presence": {
@@ -757,11 +757,11 @@ The server broadcasts various events to clients:
     }
   }
 }
-\`\`\`
+```
 
 #### Collection Updates
 
-\`\`\`json
+```json
 {
   "type": "collection_updated",
   "collection": "messages",
@@ -773,11 +773,11 @@ The server broadcasts various events to clients:
     "created_at": "2023-05-01T12:00:00Z"
   }
 }
-\`\`\`
+```
 
 ## Data Persistence
 
-All collection data is persisted to the \`data\` directory and loaded on server startup.
+All collection data is persisted to the `data` directory and loaded on server startup.
 
 ## Credits
 
@@ -948,5 +948,4 @@ MIT
             alert('Failed to create ZIP file. Please check console for details.');
         }
     });
-    
 });
