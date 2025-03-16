@@ -4,8 +4,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     downloadBtn.addEventListener('click', async function() {
         try {
-            // Import JSZip directly
-            const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js')).default;
+            // Load JSZip from CDN
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+            document.head.appendChild(script);
+            
+            // Wait for the script to load
+            await new Promise((resolve, reject) => {
+                script.onload = resolve;
+                script.onerror = reject;
+            });
+            
+            // Create a new zip instance
             const zip = new JSZip();
             
             // Create the server files
@@ -939,5 +949,4 @@ MIT
         }
     });
     
-    // ... existing code ...
 });
