@@ -2,31 +2,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle the download button click
     const downloadBtn = document.getElementById('downloadBtn');
     
-    downloadBtn.addEventListener('click', function() {
-        // Create the server files
-        const serverFiles = {
-            'package.json': JSON.stringify({
-                "name": "manus-websocket-server",
-                "version": "1.0.0",
-                "description": "Node.js WebSocket server for Manus AI",
-                "main": "server.js",
-                "scripts": {
-                    "start": "node server.js"
-                },
-                "dependencies": {
-                    "express": "^4.18.2",
-                    "ws": "^8.14.2",
-                    "cors": "^2.8.5",
-                    "uuid": "^9.0.1"
-                },
-                "engines": {
-                    "node": ">=14.0.0"
-                },
-                "author": "Manus AI",
-                "license": "MIT"
-            }, null, 2),
+    downloadBtn.addEventListener('click', async function() {
+        try {
+            // Import JSZip directly
+            const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js')).default;
+            const zip = new JSZip();
             
-            'server.js': `const express = require('express');
+            // Create the server files
+            const serverFiles = {
+                'package.json': JSON.stringify({
+                    "name": "manus-websocket-server",
+                    "version": "1.0.0",
+                    "description": "Node.js WebSocket server for Manus AI",
+                    "main": "server.js",
+                    "scripts": {
+                        "start": "node server.js"
+                    },
+                    "dependencies": {
+                        "express": "^4.18.2",
+                        "ws": "^8.14.2",
+                        "cors": "^2.8.5",
+                        "uuid": "^9.0.1"
+                    },
+                    "engines": {
+                        "node": ">=14.0.0"
+                    },
+                    "author": "Manus AI",
+                    "license": "MIT"
+                }, null, 2),
+                
+                'server.js': `const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const cors = require('cors');
@@ -891,61 +896,48 @@ MIT
     </script>
 </body>
 </html>`
-        };
-        
-        // Create a ZIP file
-        createAndDownloadZip(serverFiles);
+            };
+            
+            // Add files to the ZIP
+            for (const [filename, content] of Object.entries(serverFiles)) {
+                // Handle nested directories
+                if (filename.includes('/')) {
+                    const parts = filename.split('/');
+                    const file = parts.pop();
+                    let folder = zip;
+                    
+                    // Create nested folders as needed
+                    for (const part of parts) {
+                        folder = folder.folder(part);
+                    }
+                    
+                    folder.file(file, content);
+                } else {
+                    zip.file(filename, content);
+                }
+            }
+            
+            // Generate ZIP file
+            const blob = await zip.generateAsync({type: 'blob'});
+            
+            // Create download link
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'manus-websocket-server.zip';
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            
+            // Clean up
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error creating ZIP file:', error);
+            alert('Failed to create ZIP file. Please check console for details.');
+        }
     });
     
-    // Function to create and download a ZIP file
-    function createAndDownloadZip(files) {
-        // Import JSZip dynamically
-        import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js')
-            .then(module => {
-                const JSZip = module.default;
-                const zip = new JSZip();
-                
-                // Add files to the ZIP
-                for (const [filename, content] of Object.entries(files)) {
-                    // Handle nested directories
-                    if (filename.includes('/')) {
-                        const parts = filename.split('/');
-                        const file = parts.pop();
-                        let folder = zip;
-                        
-                        // Create nested folders as needed
-                        for (const part of parts) {
-                            folder = folder.folder(part);
-                        }
-                        
-                        folder.file(file, content);
-                    } else {
-                        zip.file(filename, content);
-                    }
-                }
-                
-                // Generate ZIP file
-                zip.generateAsync({type: 'blob'})
-                    .then(blob => {
-                        // Create download link
-                        const url = URL.createObjectURL(blob);
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.download = 'manus-websocket-server.zip';
-                        
-                        // Trigger download
-                        document.body.appendChild(link);
-                        link.click();
-                        
-                        // Clean up
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(url);
-                    });
-            })
-            .catch(error => {
-                console.error('Error loading JSZip:', error);
-                alert('Failed to create ZIP file. Please check console for details.');
-            });
-    }
+    // ... existing code ...
 });
-
